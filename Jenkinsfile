@@ -47,13 +47,7 @@ pipeline {
                 // Build the Docker image using the Dockerfile in the 'app' directory
                 script {
                     dir('app') {
-                        try {
-                            sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
-                        } catch (Exception e) {
-                            echo "Error building Docker image: ${e.getMessage()}"
-                            currentBuild.result = 'FAILURE'
-                            error("Docker build failed")
-                        }
+                        sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                     }
                 }
             }
@@ -63,13 +57,7 @@ pipeline {
             steps {
                 // Run the Docker container
                 script {
-                    try {
-                        sh 'docker run -d -p 5500:5500 --name flask-app ${DOCKER_IMAGE}:${DOCKER_TAG}'
-                    } catch (Exception e) {
-                        echo "Error running Docker container: ${e.getMessage()}"
-                        currentBuild.result = 'FAILURE'
-                        error("Docker run failed")
-                    }
+                    sh 'docker run -d -p 5500:5500 --name flask-app ${DOCKER_IMAGE}:${DOCKER_TAG}'
                 }
             }
         }
@@ -79,12 +67,8 @@ pipeline {
         always {
             // Clean up workspace and stop/remove the container after the build
             script {
-                try {
-                    sh 'docker stop flask-app || true'
-                    sh 'docker rm flask-app || true'
-                } catch (Exception e) {
-                    echo 'No container to clean up or error in cleanup: ' + e.getMessage()
-                }
+                sh 'docker stop flask-app || true'
+                sh 'docker rm flask-app || true'
                 cleanWs()
             }
         }
