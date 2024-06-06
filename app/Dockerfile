@@ -2,10 +2,10 @@
 FROM python:latest
 
 # Set the working directory
-WORKDIR /app
+# WORKDIR /app
 
 # Copy contents into image
-COPY . /app
+# COPY . /app
 
 # Install pip dependencies from requirements
 RUN pip install -r requirements.txt
