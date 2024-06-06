@@ -91,13 +91,13 @@ pipeline {
         always {
             // Clean up workspace and stop/remove the containers and network after the build
             script {
-                sh '''
-                    docker stop flask-app || true
-                    docker rm flask-app || true
-                    docker stop nginx-proxy || true
-                    docker rm nginx-proxy || true
-                    docker network rm ${DOCKER_NETWORK} || true
-                '''
+                //sh '''
+                //    docker stop flask-app || true
+                //    docker rm flask-app || true
+                //    docker stop nginx-proxy || true
+                //    docker rm nginx-proxy || true
+                //    docker network rm ${DOCKER_NETWORK} || true
+                //'''
                 cleanWs()
             }
         }
