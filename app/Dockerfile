@@ -5,7 +5,7 @@ FROM python:latest
 WORKDIR /app
 
 # Copy contents into image
-COPY /app /app
+COPY . /app
 
 RUN pwd
 RUN ls -la
