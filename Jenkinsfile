@@ -43,7 +43,13 @@ pipeline {
                 // Build the Docker image using the Dockerfile in the 'app' directory
                 script {
                     dir('app') {
-                        dockerImage = docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
+                        try {
+                            dockerImage = docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
+                        } catch (Exception e) {
+                            echo "Error building Docker image: ${e.getMessage()}"
+                            currentBuild.result = 'FAILURE'
+                            error("Docker build failed")
+                        }
                     }
                 }
             }
