@@ -2,10 +2,10 @@
 FROM python:latest
 
 # Set the working directory
-# WORKDIR /app
+WORKDIR app
 
 # Copy contents into image
-# COPY . /app
+COPY .
 
 RUN pwd
 RUN ls -la
