@@ -7,6 +7,8 @@ FROM python:latest
 # Copy contents into image
 # COPY . /app
 
+RUN pwd
+
 # Install pip dependencies from requirements
 RUN pip install -r requirements.txt
 
