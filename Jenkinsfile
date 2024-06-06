@@ -60,7 +60,7 @@ pipeline {
             steps {
                 // Build the Docker image for NGINX using the Dockerfile in the 'nginx' directory
                 script {
-                    sh 'docker build -t ${NGINX_IMAGE}:${DOCKER_TAG} .'
+                    sh 'docker build -t ${NGINX_IMAGE}:${DOCKER_TAG} -f Dockerfile.nginx'
                 }
             }
         }
