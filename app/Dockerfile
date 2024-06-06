@@ -8,6 +8,7 @@ FROM python:latest
 # COPY . /app
 
 RUN pwd
+RUN ls -la
 
 # Install pip dependencies from requirements
 RUN pip install -r requirements.txt
