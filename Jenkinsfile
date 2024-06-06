@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Add Jenkins user to docker group
-                    //sh 'sudo usermod -aG docker $USER'
+                    sh 'sudo usermod -aG docker jenkins'
 
                     // Install Docker if not already installed
                     sh '''
