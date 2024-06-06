@@ -3,8 +3,10 @@ pipeline {
 
     environment {
         // Define environment variables
-        DOCKER_IMAGE = "my-flask-app"
+        FLASK_IMAGE = "my-flask-app"
+        NGINX_IMAGE = "my-nginx"
         DOCKER_TAG = "latest"
+        DOCKER_NETWORK = "my-network"
     }
 
     stages {
@@ -26,10 +28,11 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    // Remove any existing Docker containers and images to free up space
+                    // Remove any existing Docker containers, images, and networks to free up space
                     sh '''
                         docker container prune -f || true
                         docker image prune -f || true
+                        docker network rm ${DOCKER_NETWORK} || true
                     '''
                 }
             }
@@ -42,22 +45,45 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Flask Docker Image') {
             steps {
                 // Build the Docker image using the Dockerfile in the 'app' directory
                 script {
                     dir('app') {
-                        sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                        sh 'docker build -t ${FLASK_IMAGE}:${DOCKER_TAG} .'
                     }
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Build NGINX Docker Image') {
             steps {
-                // Run the Docker container
+                // Build the Docker image for NGINX using the Dockerfile in the 'nginx' directory
                 script {
-                    sh 'docker run -d -p 5500:5500 --name flask-app ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    dir('nginx') {
+                        sh 'docker build -t ${NGINX_IMAGE}:${DOCKER_TAG} .'
+                    }
+                }
+            }
+        }
+
+        stage('Create Docker Network') {
+            steps {
+                // Create a Docker network
+                script {
+                    sh 'docker network create ${DOCKER_NETWORK}'
+                }
+            }
+        }
+
+        stage('Run Docker Containers') {
+            steps {
+                // Run the Flask and NGINX Docker containers
+                script {
+                    sh '''
+                        docker run -d --name flask-app --network ${DOCKER_NETWORK} ${FLASK_IMAGE}:${DOCKER_TAG}
+                        docker run -d -p 80:80 --name nginx-proxy --network ${DOCKER_NETWORK} ${NGINX_IMAGE}:${DOCKER_TAG}
+                    '''
                 }
             }
         }
@@ -65,10 +91,15 @@ pipeline {
 
     post {
         always {
-            // Clean up workspace and stop/remove the container after the build
+            // Clean up workspace and stop/remove the containers and network after the build
             script {
-                sh 'docker stop flask-app || true'
-                sh 'docker rm flask-app || true'
+                sh '''
+                    docker stop flask-app || true
+                    docker rm flask-app || true
+                    docker stop nginx-proxy || true
+                    docker rm nginx-proxy || true
+                    docker network rm ${DOCKER_NETWORK} || true
+                '''
                 cleanWs()
             }
         }
