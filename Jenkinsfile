@@ -1,20 +1,76 @@
 pipeline {
-  agent any
+    agent any
+
+    environment {
+        // Define environment variables
+        DOCKER_IMAGE = "my-flask-app"
+        DOCKER_TAG = "latest"
+    }
+
     stages {
-      stage('List Workspace Contents'){
-        steps {
-          sh "ls"
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    // Add Jenkins user to docker group
+                    sh 'sudo usermod -aG docker $USER'
+
+                    // Install Docker if not already installed
+                    sh '''
+                        if ! [ -x "$(command -v docker)" ]; then
+                          curl -fsSL https://get.docker.com -o get-docker.sh
+                          sh get-docker.sh
+                          rm get-docker.sh
+                        fi
+                    '''
+                }
+            }
         }
-      }
-      stage('Print Workspace Path'){
-        steps {
-          sh "pwd"
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Remove any existing Docker containers and images to free up space
+                    sh '''
+                        docker container prune -f
+                        docker image prune -f
+                    '''
+                }
+            }
         }
-      }
-      stage('Run script.sh'){
-        steps {
-          sh "sh script.sh"
+
+        stage('Build Docker Image') {
+            steps {
+                // Build the Docker image using the Dockerfile in the 'app' directory
+                script {
+                    dir('app') {
+                        dockerImage = docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
+                    }
+                }
+            }
         }
-      }
+
+        stage('Run Docker Container') {
+            steps {
+                // Run the Docker container
+                script {
+                    dockerImage.run('-d -p 5500:5500 --name flask-app')
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace and stop/remove the container after the build
+            script {
+                try {
+                    sh 'docker stop flask-app'
+                    sh 'docker rm flask-app'
+                } catch (Exception e) {
+                    echo 'No container to clean up.'
+                }
+                cleanWs()
+            }
+        }
     }
 }
