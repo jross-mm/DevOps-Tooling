@@ -1,14 +1,19 @@
 pipeline {
   agent any
     stages {
-      stage('Pipeline Stages'){
+      stage('List Workspace Contents'){
         steps {
           sh "ls"
         }
       }
-      stage(‘second stage’){
+      stage('Print Workspace Path'){
         steps {
-          sh “pwd”
+          sh "pwd"
+        }
+      }
+      stage('Run script.sh'){
+        steps {
+          sh "./script.sh"
         }
       }
     }
