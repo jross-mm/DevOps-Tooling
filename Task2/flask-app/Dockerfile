@@ -22,5 +22,8 @@ RUN chmod +x /usr/local/bin/wait-for-it.sh
 # Expose the port the app runs on
 EXPOSE 5000
 
+# Add a health check
+HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:5000/ || exit 1
+
 # Define the entrypoint for the container
 ENTRYPOINT ["wait-for-it.sh", "mysql", "3306", "--", "python", "app.py"]
