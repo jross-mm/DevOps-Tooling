@@ -1,5 +1,5 @@
 # Use the official Nginx image from DockerHub
-FROM nginx:lastest
+FROM nginx:alpine
 
 # Copy custom Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
