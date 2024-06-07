@@ -91,7 +91,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run("-d --network ${DOCKER_NETWORK} -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=flask-db --name mysql-db")
+                    def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run("-d --network ${DOCKER_NETWORK} -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=flask-db --name mysql-db")
                     sleep 20
                     def appContainer = docker.image("${DOCKERHUB_REPO}:flask-app").run("-d --network ${DOCKER_NETWORK} --link mysql-db:mysql -p 5000:5000 --name flask-app")
                     sleep 20
