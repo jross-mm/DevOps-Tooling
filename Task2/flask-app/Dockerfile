@@ -20,4 +20,4 @@ EXPOSE 5000
 HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:5000/ || exit 1
 
 # Define the entrypoint for the container
-ENTRYPOINT ["mysql", "3306", "--", "python", "app.py"]
+ENTRYPOINT ["python", "app.py"]
