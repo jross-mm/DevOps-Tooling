@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
-        DOCKERHUB_REPO = 'your-dockerhub-username/dockerfileexercise'
+        DOCKERHUB_REPO = 'jonny2402/devops-tooling'
     }
 
     stages {
