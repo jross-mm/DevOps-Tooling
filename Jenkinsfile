@@ -20,7 +20,9 @@ pipeline {
         stage('Build MySQL Image') {
             steps {
                 script {
-                    docker.build("${DOCKERHUB_REPO}:mysql-db", './db')
+                    dir ('Task2/db') {
+                        docker.build("${DOCKERHUB_REPO}:mysql-db")
+                    } 
                 }
             }
         }
