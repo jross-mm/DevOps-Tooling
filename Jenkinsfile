@@ -11,7 +11,7 @@ pipeline {
                 script {
                     git url: 'https://github.com/jross-mm/DevOps-Tooling.git',
                         branch: 'main',
-                        credentialsId: 'github_personal_access_token'
+                        credentialsId: 'github_pat'
                 }
             }
         }
