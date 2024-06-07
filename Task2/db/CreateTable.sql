@@ -1,3 +1,7 @@
+CREATE DATABASE IF NOT EXISTS `flask-db`;
+
+USE `flask-db`;
+
 CREATE TABLE IF NOT EXISTS users
              (
                           id         INTEGER NOT NULL AUTO_INCREMENT,
