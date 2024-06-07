@@ -10,7 +10,9 @@ pipeline {
         stage('Build Flask App Image') {
             steps {
                 script {
-                    docker.build("${DOCKERHUB_REPO}:flask-app", './flask-app')
+                    dir ('flask-app') {
+                        docker.build("${DOCKERHUB_REPO}:flask-app", './flask-app')
+                    }
                 }
             }
         }
