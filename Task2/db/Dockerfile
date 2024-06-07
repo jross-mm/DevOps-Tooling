@@ -2,7 +2,7 @@
 FROM mysql:5.7
 
 # Set environment variables for MySQL
-ENV MYSQL_ROOT_PASSWORD=""
+ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_DATABASE=flask-db
 
 # Copy the SQL file into the docker-entrypoint-initdb.d directory
