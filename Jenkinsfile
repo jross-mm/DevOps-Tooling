@@ -1,20 +1,45 @@
 pipeline {
-  agent any
+    agent any
+
+    environment {
+        GITHUB_TOKEN = credentials('github_personal_access_token')
+    }
+
     stages {
-      stage('List Workspace Contents'){
-        steps {
-          sh "ls"
+        stage('Clone Repository') {
+            steps {
+                script {
+                    git url: 'https://github.com/jross-mm/DevOps-Tooling.git',
+                        branch: 'main',
+                        credentialsId: 'github_personal_access_token'
+                }
+            }
         }
-      }
-      stage('Print Workspace Path'){
-        steps {
-          sh "pwd"
+
+        stage('Build') {
+            steps {
+                script {
+                    writeFile file: 'Dockerfile', text: '''
+                    FROM nginx:alpine
+                    COPY nginx.conf /etc/nginx/nginx.conf
+                    '''
+
+                    writeFile file: 'nginx.conf', text: '''
+                    events {}
+                    http {
+                        server {
+                            listen 80;
+                            location / {
+                                return 200 'Hello Jenkins!';
+                                add_header Content-Type text/plain;
+                            }
+                        }
+                    }
+                    '''
+                }
+                sh 'docker build -t my-nginx .'
+                sh 'echo $SECRET_VAR'
+            }
         }
-      }
-      stage('Run script.sh'){
-        steps {
-          sh "sh script.sh"
-        }
-      }
     }
 }
