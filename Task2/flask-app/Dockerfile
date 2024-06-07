@@ -13,12 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the image
 COPY . .
 
-# Copy the wait-for-it script
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
-
-# Make the script executable
-RUN chmod +x /usr/local/bin/wait-for-it.sh
-
 # Expose the port the app runs on
 EXPOSE 5000
 
@@ -26,4 +20,4 @@ EXPOSE 5000
 HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:5000/ || exit 1
 
 # Define the entrypoint for the container
-ENTRYPOINT ["wait-for-it.sh", "mysql", "3306", "--", "python", "app.py"]
+ENTRYPOINT ["mysql", "3306", "--", "python", "app.py"]
