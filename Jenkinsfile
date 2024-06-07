@@ -92,9 +92,9 @@ pipeline {
             steps {
                 script {
                     def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run("-d --network ${DOCKER_NETWORK} -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=flask-db --name mysql-db")
-                    sleep 20
+                    sleep 10
                     def appContainer = docker.image("${DOCKERHUB_REPO}:flask-app").run("-d --network ${DOCKER_NETWORK} --link mysql-db:mysql -p 5000:5000 --name flask-app")
-                    sleep 20
+                    sleep 10
                     def nginxContainer = docker.image("${DOCKERHUB_REPO}:nginx").run("-d --network ${DOCKER_NETWORK} --link flask-app:flask-app -p 80:80 --name nginx")
                 }
             }
