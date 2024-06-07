@@ -92,22 +92,9 @@ pipeline {
             steps {
                 script {
                     def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run("-d --network ${DOCKER_NETWORK} -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=flask-db --name mysql-db")
-                    sleep 10
+                    sleep 20
                     def appContainer = docker.image("${DOCKERHUB_REPO}:flask-app").run("-d --network ${DOCKER_NETWORK} --link mysql-db:mysql -p 5000:5000 --name flask-app")
-                    // Wait until Flask app is healthy with a maximum timeout of 60 seconds
-                    sh '''
-                    timeout=60
-                    elapsed=0
-                    while [ "$(docker inspect -f {{.State.Health.Status}} flask-app)" != "healthy" ]; do
-                        if [ $elapsed -ge $timeout ]; then
-                            echo "Timeout reached while waiting for flask-app to become healthy"
-                            exit 1
-                        fi
-                        echo "Waiting for flask-app to become healthy..."
-                        sleep 5
-                        elapsed=$((elapsed + 5))
-                    done
-                    '''
+                    sleep 20
                     def nginxContainer = docker.image("${DOCKERHUB_REPO}:nginx").run("-d --network ${DOCKER_NETWORK} --link flask-app:flask-app -p 80:80 --name nginx")
                 }
             }
