@@ -7,12 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git url: 'https://github.com/your-username/dockerfileexercise-task1.git', branch: 'main'
-            }
-        }
-
         stage('Build Flask App Image') {
             steps {
                 script {
