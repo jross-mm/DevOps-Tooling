@@ -7,6 +7,16 @@ pipeline {
     }
 
     stages {
+        stage('Clean Up Existing Containers') {
+            steps {
+                script {
+                    // Stop and remove existing containers if they are running
+                    sh 'docker rm -f flask-app || true'
+                    sh 'docker rm -f mysql-db || true'
+                }
+            }
+        }
+        
         stage('Build Flask App Image') {
             steps {
                 script {
