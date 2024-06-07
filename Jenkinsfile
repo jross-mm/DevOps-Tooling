@@ -1,20 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        GITHUB_TOKEN = credentials('github_pat')
-    }
-
-    stages {
-        stage('Clone Repository') {
-            steps {
-                script {
-                    git url: 'https://github.com/jross-mm/DevOps-Tooling.git',
-                        branch: 'stretch',
-                        credentialsId: 'github_pat'
-                }
-            }
-        }
+    //environment {
+    //    GITHUB_TOKEN = credentials('github_pat')
+    //}
 
         stage('Build') {
             steps {
