@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     git url: 'https://github.com/jross-mm/DevOps-Tooling.git',
-                        branch: 'main',
+                        branch: 'stretch',
                         credentialsId: 'github_pat'
                 }
             }
