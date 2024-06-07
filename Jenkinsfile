@@ -59,12 +59,12 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            script {
-                //sh 'docker rm -f flask-app || true'
-                //sh 'docker rm -f mysql-db || true'
-            }
-        }
-    }
+    //post {
+    //    always {
+    //        script {
+    //            //sh 'docker rm -f flask-app || true'
+    //            //sh 'docker rm -f mysql-db || true'
+    //        }
+    //    }
+    //}
 }
