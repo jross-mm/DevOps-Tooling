@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
         DOCKERHUB_REPO = 'jonny2402/devops-tooling'
+        DOCKER_NETWORK = 'my-network'
     }
 
     stages {
@@ -14,6 +15,15 @@ pipeline {
                     sh 'docker rm -f flask-app || true'
                     sh 'docker rm -f mysql-db || true'
                     sh 'docker rm -f nginx || true'
+                    sh 'docker network rm ${DOCKER_NETWORK} || true'
+                }
+            }
+        }
+
+        stage('Create Docker Network') {
+            steps {
+                script {
+                    sh 'docker network create ${DOCKER_NETWORK}'
                 }
             }
         }
@@ -81,9 +91,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run('-d -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=flask-db --name mysql-db')
-                    def appContainer = docker.image("${DOCKERHUB_REPO}:flask-app").run("-d --link mysql-db:mysql -p 5000:5000 --name flask-app")
-                    def nginxContainer = docker.image("${DOCKERHUB_REPO}:nginx").run("-d --link flask-app:flask-app -p 80:80 --name nginx")
+                    def dbContainer = docker.image("${DOCKERHUB_REPO}:mysql-db").run("-d --network ${DOCKER_NETWORK} -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=flask-db --name mysql-db")
+                    def appContainer = docker.image("${DOCKERHUB_REPO}:flask-app").run("-d --network ${DOCKER_NETWORK} --link mysql-db:mysql -p 5000:5000 --name flask-app")
+                    def nginxContainer = docker.image("${DOCKERHUB_REPO}:nginx").run("-d --network ${DOCKER_NETWORK} --link flask-app:flask-app -p 80:80 --name nginx")
                 }
             }
         }
